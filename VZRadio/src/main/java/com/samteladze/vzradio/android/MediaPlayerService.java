@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
+import com.samteladze.vzradio.R;
 
 public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener {
     private static final String ACTION_PLAY = "com.samteladze.vzradio.action.PLAY";

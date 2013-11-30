@@ -15,10 +15,10 @@
         android:allowBackup="true"
         android:icon="@drawable/just_fish_logo_cut_72x72"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
+        android:theme="@style/AppTheme" >
 
         <activity
-            android:name="com.samteladze.vzradio.MainWrapperActivity"
+            android:name="com.samteladze.vzradio.android.MainWrapperActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,7 @@
         </activity>
 
         <service
-            android:name="com.samteladze.vzradio.MediaPlayerService"
+            android:name="com.samteladze.vzradio.android.MediaPlayerService"
             android:exported="false"
             android:label="Media Player" >
             <intent-filter>

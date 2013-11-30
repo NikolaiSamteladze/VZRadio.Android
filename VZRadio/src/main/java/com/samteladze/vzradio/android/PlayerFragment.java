@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.samteladze.vzradio.R;
 
 public class PlayerFragment extends Fragment {
     private Button mButtonPlay;

@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.samteladze.vzradio.R;
+
 public class EventsArrayAdapter extends ArrayAdapter<String> {
 
 	private final Context context;
@@ -14,9 +16,7 @@ public class EventsArrayAdapter extends ArrayAdapter<String> {
 
 	public EventsArrayAdapter(Context context, String[] values) {
 
-		super(	context,
-				R.layout.events_list_row,
-				values);
+		super(context, R.layout.events_list_row, values);
 		this.context = context;
 		this.arrEventTitles = values;
 	}
@@ -27,9 +27,7 @@ public class EventsArrayAdapter extends ArrayAdapter<String> {
 		LayoutInflater inflater =
 				(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		View rowView = inflater.inflate(R.layout.events_list_row,
-										parent,
-										false);
+		View rowView = inflater.inflate(R.layout.events_list_row, parent, false);
 		
 		TextView tvEventTitle = (TextView) rowView.findViewById(R.id.event_title);
 		tvEventTitle.setText(arrEventTitles[position]);

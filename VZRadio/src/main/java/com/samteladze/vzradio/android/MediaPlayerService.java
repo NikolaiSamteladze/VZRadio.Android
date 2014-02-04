@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.TrackInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
@@ -69,7 +68,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         	// Create an ongoing notification and make the service run in foreground
         	PendingIntent notificationPIntent = 
         			PendingIntent.getActivity(getApplicationContext(), 0,
-    										  new Intent(getApplicationContext(), MainWrapperActivity.class),
+    										  new Intent(getApplicationContext(), MainActivity.class),
     									  	  PendingIntent.FLAG_UPDATE_CURRENT);
         	Notification notification = new Notification();
         	notification.tickerText = "Playing radio";

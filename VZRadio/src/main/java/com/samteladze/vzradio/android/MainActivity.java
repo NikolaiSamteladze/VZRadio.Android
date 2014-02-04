@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
@@ -72,8 +73,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Show Radio Fragment on start
         viewPager.setCurrentItem(1);
 
-        currentSongUpdateAlarmReceiver = new OnCurrentSongUpdateAlarmReceiver();
-        this.registerReceiver(currentSongUpdateAlarmReceiver, null);
         scheduleCurrentSongUpdateAlarm();
     }
 
@@ -124,19 +123,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     }
 
-    private class OnCurrentSongUpdateAlarmReceiver extends BroadcastReceiver {
 
-        private ILog log;
 
-        public OnCurrentSongUpdateAlarmReceiver() {
-            this.log = new ConsoleLog(this.getClass().getCanonicalName());
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            log.Error("In onReceive");
-        }
-    }
 
     private void scheduleCurrentSongUpdateAlarm() {
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
@@ -150,7 +138,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
             // Set repeating alarm that will invoke OnCurrentSongUpdateAlarmReceiver
             alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 10000, 1000, alarmPendingIntent);
+                    SystemClock.elapsedRealtime() + 10000, 10000, alarmPendingIntent);
 
             log.Info("Repeating alarm was set");
         }

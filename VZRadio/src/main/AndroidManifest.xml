@@ -26,6 +26,8 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".android.OnCurrentSongUpdateAlarmReceiver" />
+
         <service
             android:name="com.samteladze.vzradio.android.MediaPlayerService"
             android:exported="false"

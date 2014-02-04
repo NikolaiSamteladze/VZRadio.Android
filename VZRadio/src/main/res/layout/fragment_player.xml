@@ -21,7 +21,25 @@
         android:background="@drawable/fish_logo"
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_below="@+id/radioTitleImage"
+        android:layout_marginTop="40dp">
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/currentSongWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/radio_controls_wrapper" >
+
+        <TextView
+            android:id="@+id/currentSongName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Band name - Song name"
+            android:gravity="center" />
+
     </RelativeLayout>
 
     <RelativeLayout

@@ -1,6 +1,9 @@
 package com.samteladze.vzradio.android;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
 import com.samteladze.vzradio.R;
 
 public class PlayerFragment extends Fragment {
@@ -49,7 +54,12 @@ public class PlayerFragment extends Fragment {
   		});
     	
     	changeButtonsState(mMusicIsPlayingFlag);
-        
+
+        IntentFilter intentFilter =
+                new IntentFilter("com.samteladze.vzradio.android.CURRENT_SONG_CHANGED");
+        OnCurrentSongChangedReceiver onCurrentSongChangedReceiver = new OnCurrentSongChangedReceiver();
+        getActivity().registerReceiver(onCurrentSongChangedReceiver, intentFilter);
+
         return playerView;
     }
     
@@ -63,6 +73,24 @@ public class PlayerFragment extends Fragment {
 										  R.drawable.player_stop_enabled : 
 										  R.drawable.player_stop_disabled);
     }
-	
+
+    private class OnCurrentSongChangedReceiver extends BroadcastReceiver {
+
+        private final ILog log;
+
+        public OnCurrentSongChangedReceiver() {
+            this.log = new ConsoleLog(this.getClass().getCanonicalName());
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            log.Info("In onReceive");
+
+            String newSongName = intent.getStringExtra("newSongName");
+
+            TextView textView = (TextView) getActivity().findViewById(R.id.currentSongName);
+            textView.setText(newSongName);
+        }
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.android;
+package com.samteladze.vzradio;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,17 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.samteladze.vzradio.R;
-
 public class PlayerFragment extends Fragment {
+    private static boolean mMusicIsPlayingFlag = false;
+
     private Button mButtonPlay;
     private Button mButtonStop;
-    
-    private static boolean mMusicIsPlayingFlag = false;   
-	
+    private OnCurrentSongChangedReceiver onCurrentSongChangedReceiver;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View playerView = inflater.inflate(R.layout.fragment_player, container, false);
         
         mButtonPlay = (Button) playerView.findViewById(R.id.buttonPlay);
@@ -57,12 +56,26 @@ public class PlayerFragment extends Fragment {
 
         IntentFilter intentFilter =
                 new IntentFilter("com.samteladze.vzradio.android.CURRENT_SONG_CHANGED");
-        OnCurrentSongChangedReceiver onCurrentSongChangedReceiver = new OnCurrentSongChangedReceiver();
+        onCurrentSongChangedReceiver = new OnCurrentSongChangedReceiver();
         getActivity().registerReceiver(onCurrentSongChangedReceiver, intentFilter);
 
         return playerView;
     }
-    
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter =
+                new IntentFilter("com.samteladze.vzradio.android.CURRENT_SONG_CHANGED");
+        getActivity().registerReceiver(onCurrentSongChangedReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(onCurrentSongChangedReceiver);
+    }
+
     private void changeButtonsState(boolean musicIsPlayingFlag) {
     	mButtonPlay.setEnabled(!musicIsPlayingFlag);
     	mButtonStop.setEnabled(musicIsPlayingFlag);
@@ -75,7 +88,6 @@ public class PlayerFragment extends Fragment {
     }
 
     private class OnCurrentSongChangedReceiver extends BroadcastReceiver {
-
         private final ILog log;
 
         public OnCurrentSongChangedReceiver() {
@@ -84,13 +96,9 @@ public class PlayerFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            log.Info("In onReceive");
-
-            String newSongName = intent.getStringExtra("newSongName");
-
+            String newSongName = intent.getStringExtra("newSong");
             TextView textView = (TextView) getActivity().findViewById(R.id.currentSongName);
             textView.setText(newSongName);
         }
     }
-
 }

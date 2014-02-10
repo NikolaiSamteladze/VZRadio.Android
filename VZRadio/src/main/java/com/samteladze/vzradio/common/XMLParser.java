@@ -66,7 +66,7 @@ public class XMLParser {
 			document = documentBuilder.parse(inputSource);
 
 		} catch (Exception e) {
-			Log.e("Error: ", e.getMessage());
+			Log.e("error: ", e.getMessage());
 			return null;
 		}
 

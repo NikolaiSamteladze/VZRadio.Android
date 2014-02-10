@@ -1,10 +1,8 @@
-package com.samteladze.vzradio.android;
+package com.samteladze.vzradio;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.samteladze.vzradio.R;
 
 import java.util.Locale;
 

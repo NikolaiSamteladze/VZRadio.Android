@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.android;
+package com.samteladze.vzradio;
 
 import android.util.Log;
 
@@ -20,27 +20,27 @@ public class ConsoleLog implements ILog {
     }
 
     @Override
-    public void Error(String message) {
+    public void error(String message) {
         Log.e(source, message);
     }
 
     @Override
-    public void Error(String message, Throwable exception) {
+    public void error(Throwable exception, String message) {
         Log.e(source, message, exception);
     }
 
     @Override
-    public void Warning(String message) {
+    public void warning(String message) {
         Log.w(source, message);
     }
 
     @Override
-    public void Info(String message) {
+    public void info(String message) {
         Log.i(source, message);
     }
 
     @Override
-    public void Debug(String message) {
+    public void debug(String message) {
         Log.d(source, message);
     }
 

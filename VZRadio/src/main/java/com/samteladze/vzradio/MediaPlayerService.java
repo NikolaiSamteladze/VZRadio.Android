@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.android;
+package com.samteladze.vzradio;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
-import com.samteladze.vzradio.R;
 
 public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener {
     private static final String ACTION_PLAY = "com.samteladze.vzradio.action.PLAY";

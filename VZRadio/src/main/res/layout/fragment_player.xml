@@ -1,55 +1,51 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/simple_background"
     android:gravity="bottom"
-    android:orientation="vertical" >
-    <RelativeLayout
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:weightSum="100">
+
+    <ImageView
         android:id="@+id/radioTitleImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
         android:background="@drawable/radio_title"
         android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp">
-    </RelativeLayout>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="15" />
 
     <RelativeLayout
-        android:id="@+id/fishLogoImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/fish_logo"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/radioTitleImage"
-        android:layout_marginTop="40dp">
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/currentSongWrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/radio_controls_wrapper" >
+        android:layout_height="0dp"
+        android:layout_weight="55" >
 
-        <TextView
-            android:id="@+id/currentSongName"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/fishLogoImage"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Band name - Song name"
-            android:gravity="center" />
+            android:background="@drawable/fish_logo"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/currentSongName"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:gravity="center"
+        android:layout_weight="10" />
 
     <RelativeLayout
         android:id="@+id/radio_controls_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="false"
-        android:layout_marginBottom="30dp"
-        android:gravity="center_horizontal" >
+        android:layout_height="0dp"
+        android:gravity="center_horizontal"
+        android:layout_weight="20" >
 
         <Button
             android:id="@+id/buttonPlay"
@@ -63,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/buttonPlay"
             android:background="@drawable/player_stop_disabled" />
+
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

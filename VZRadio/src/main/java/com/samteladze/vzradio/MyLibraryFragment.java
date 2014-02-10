@@ -1,11 +1,10 @@
-package com.samteladze.vzradio.android;
+package com.samteladze.vzradio;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.samteladze.vzradio.R;
 
 public class MyLibraryFragment extends Fragment {
 

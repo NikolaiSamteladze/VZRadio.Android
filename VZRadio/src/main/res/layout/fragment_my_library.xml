@@ -1,7 +1,24 @@
-<TextView 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:textSize="24sp"
-    android:padding="32dp" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/simple_background" >
+
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:padding="20dp"
+        android:layout_above="@+id/event_image"
+        android:text="This is not the library you are looking for ..."/>
+
+    <ImageView
+        android:id="@+id/event_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/page_not_found"
+        android:layout_marginLeft="10dp"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

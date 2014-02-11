@@ -1,4 +1,4 @@
-package com.samteladze.vzradio;
+package com.samteladze.vzradio.android;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.samteladze.vzradio.domain.Song;
+import com.samteladze.vzradio.android.domain.Song;
 
 import java.io.IOException;
 

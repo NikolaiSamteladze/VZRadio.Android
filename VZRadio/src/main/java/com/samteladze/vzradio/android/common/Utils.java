@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.common;
+package com.samteladze.vzradio.android.common;
 
 import java.io.InputStream;
 import java.io.OutputStream;

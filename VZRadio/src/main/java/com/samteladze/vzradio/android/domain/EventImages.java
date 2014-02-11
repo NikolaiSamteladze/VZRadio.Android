@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.domain;
+package com.samteladze.vzradio.android.domain;
 
 /**
  * Created by user441 on 2/9/14.

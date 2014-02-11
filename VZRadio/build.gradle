@@ -21,12 +21,31 @@ android {
         targetSdkVersion 19
     }
 
+    // To disable Gradle multiple copies error
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("C:/Users/user441/android.keystore")
+            storePassword "Nik&Android&Dev"
+            keyAlias "android"
+            keyPassword "Nik&Android&Dev"
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            signingConfig signingConfigs.release
+            runProguard true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
     }
 }
 

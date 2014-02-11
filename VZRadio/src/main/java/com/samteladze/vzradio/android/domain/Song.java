@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.domain;
+package com.samteladze.vzradio.android.domain;
 
 import java.util.List;
 

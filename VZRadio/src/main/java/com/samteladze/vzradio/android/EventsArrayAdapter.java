@@ -1,4 +1,4 @@
-package com.samteladze.vzradio;
+package com.samteladze.vzradio.android;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.samteladze.vzradio.domain.Event;
+import com.samteladze.vzradio.android.domain.Event;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.common;
+package com.samteladze.vzradio.android.common;
 
 import java.lang.ref.SoftReference;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.samteladze.vzradio;
+package com.samteladze.vzradio.android;
 
 import android.app.Notification;
 import android.app.PendingIntent;

@@ -1,4 +1,4 @@
-package com.samteladze.vzradio;
+package com.samteladze.vzradio.android;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

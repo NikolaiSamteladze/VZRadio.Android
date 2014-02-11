@@ -1,4 +1,4 @@
-package com.samteladze.vzradio;
+package com.samteladze.vzradio.android;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.samteladze.vzradio.domain.Event;
+import com.samteladze.vzradio.android.domain.Event;
 
 import java.util.ArrayList;
 import java.util.List;

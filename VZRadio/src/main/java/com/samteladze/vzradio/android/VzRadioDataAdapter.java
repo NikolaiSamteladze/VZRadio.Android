@@ -1,4 +1,4 @@
-package com.samteladze.vzradio;
+package com.samteladze.vzradio.android;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

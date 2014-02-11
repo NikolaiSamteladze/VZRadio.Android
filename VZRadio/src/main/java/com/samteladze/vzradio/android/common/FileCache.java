@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.common;
+package com.samteladze.vzradio.android.common;
 
 import java.io.File;
 import android.content.Context;

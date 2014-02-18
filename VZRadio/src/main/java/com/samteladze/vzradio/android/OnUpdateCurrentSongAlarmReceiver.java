@@ -26,6 +26,8 @@ public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mLog.debug("OnUpdateCurrentSongAlarmReceiver in onReceive method");
+
         mContext = context;
         new UpdateCurrentSongAsyncTask().execute();
     }
@@ -61,6 +63,11 @@ public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(String json) {
+            if (json == null) {
+                mLog.error("Failed to get current song information from VZ Radio API");
+                return;
+            }
+
             ObjectMapper mapper = new ObjectMapper();
             try {
                 Song song = mapper.readValue(json, Song.class);

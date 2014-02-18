@@ -1,10 +1,12 @@
 package com.samteladze.vzradio.android;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
@@ -16,21 +18,21 @@ import android.widget.Toast;
 
 import com.samteladze.vzradio.android.common.Actions;
 import com.samteladze.vzradio.android.common.ILog;
+import com.samteladze.vzradio.android.common.Intents;
 import com.samteladze.vzradio.android.common.LogManager;
 
 public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener {
     private MediaPlayer mMediaPlayer;
-    
     private WifiLock mWifiLock;
-    
-    private int NOTIFICATION_ID = 1;
-
     private ILog mLog;
-    
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        mLog = LogManager.getLog(this.getClass().getSimpleName());
 
-    	mLog.debug("Media Player", "Starting service");
+    public MediaPlayerService() {
+        super();
+        mLog = LogManager.getLog(this.getClass().getSimpleName());
+    }
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+    	mLog.debug("Starting MediaPlayerService");
 
     	if (intent.getAction().equals(Actions.PLAY_RADIO)) {
     		
@@ -64,24 +66,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
     
     /** Called when MediaPlayer is ready */
-	@SuppressWarnings("deprecation")
 	public void onPrepared(MediaPlayer mediaPlayer) {
+        mLog.debug("MediaPlayerService is prepared");
+
 		if ((mMediaPlayer != null) && (!mMediaPlayer.isPlaying())) {
+            mLog.debug("Starting playback");
+
     		mMediaPlayer.start();
-        	
-        	// Create an ongoing notification and make the service run in foreground
-        	PendingIntent notificationPIntent = 
-        			PendingIntent.getActivity(getApplicationContext(), 0,
-    										  new Intent(getApplicationContext(), MainActivity.class),
-    									  	  PendingIntent.FLAG_UPDATE_CURRENT);
-        	Notification notification = new Notification();
-        	notification.tickerText = "Playing radio";
-        	notification.icon = R.drawable.just_fish_logo_cut_72x72;
-        	notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        	// Need to use this deprecated method to support < 3.0
-        	notification.setLatestEventInfo(getApplicationContext(), "Playing Radio",
-        	                				"Playing: Unknown", notificationPIntent);
-        	startForeground(NOTIFICATION_ID, notification);
+            broadcastRadioPlaybackStateChangedIntent("on");
     	}
     }
 
@@ -93,12 +85,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	
 	@Override
 	public void onDestroy() {
+        mLog.debug("Destroying MediaPlayerService");
+
 		if (mMediaPlayer != null)  {
 			if (mMediaPlayer.isPlaying()) {
+                mLog.debug("Stopping playback");
 				mMediaPlayer.stop();
 				stopForeground(true);
 			}
-			
+
+            broadcastRadioPlaybackStateChangedIntent("off");
 			
 			// Clean resources (wi-fi lock and media player itself)
 			mWifiLock.release();
@@ -108,5 +104,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 		
 		super.onDestroy();
 	}
+
+    private void broadcastRadioPlaybackStateChangedIntent(String state) {
+        Intent radioPlaybackStateChangedIntent = new Intent(Intents.RADIO_PLAYBACK_STATE_CHANGED);
+        radioPlaybackStateChangedIntent.putExtra("state", state);
+        getApplicationContext().sendBroadcast(radioPlaybackStateChangedIntent);
+    }
 
 }

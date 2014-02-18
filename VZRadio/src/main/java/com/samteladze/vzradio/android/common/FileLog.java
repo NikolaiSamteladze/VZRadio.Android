@@ -35,8 +35,8 @@ public class FileLog implements ILog {
     }
 
     public FileLog(String logSource) {
-        this.mConsoleLog = new ConsoleLog(getClass().getSimpleName());
-        this.source = logSource;
+        mConsoleLog = new ConsoleLog(getClass().getSimpleName());
+        source = logSource;
     }
 
     private void writeEntry(Throwable exception, String message, String tag) {

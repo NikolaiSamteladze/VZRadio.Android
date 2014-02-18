@@ -27,14 +27,19 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     private ILog mLog;
 
+    public MainActivity() {
+        super();
+        mLog = LogManager.getLog(this.getClass().getSimpleName());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mLog.debug("Creating MainActivity");
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mLog = LogManager.getLog(this.getClass().getSimpleName());
 
         // Initialization
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -77,22 +82,21 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onResume() {
+        mLog.debug("Resuming MainActivity");
         super.onResume();
+
+        mLog.debug("Scheduling CurrentSongUpdateAlarm");
         scheduleCurrentSongUpdateAlarm();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
-        AlarmManager alarmManager =
-                (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
-        Intent alarmIntent = new Intent(getApplicationContext(), OnUpdateCurrentSongAlarmReceiver.class);
-        // Create a PendingIntent from alarmIntent
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
-                alarmIntent, PendingIntent.FLAG_NO_CREATE);
+        mLog.debug("Pausing MainActivity");
 
-        alarmManager.cancel(alarmPendingIntent);
+        super.onPause();
+
+        mLog.debug("Canceling CurrentSongUpdateAlarm");
+        cancelCurrentSongUpdateAlarm();
     }
 
     @Override
@@ -138,6 +142,26 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     private void scheduleCurrentSongUpdateAlarm() {
+        mLog.debug("MainActivity in scheduleCurrentSongUpdateAlarm method");
+
+        AlarmManager alarmManager =
+                (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
+        Intent alarmIntent = new Intent(getApplicationContext(), OnUpdateCurrentSongAlarmReceiver.class);
+        // Create a PendingIntent from alarmIntent
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        // Set repeating alarm that will invoke OnUpdateCurrentSongAlarmReceiver
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + 2000, 10000, alarmPendingIntent);
+
+        mLog.info("An alarm was set to update current song");
+    }
+
+    private void cancelCurrentSongUpdateAlarm() {
+        mLog.debug("MainActivity in cancelCurrentSongUpdateAlarm method");
+
         AlarmManager alarmManager =
                 (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
@@ -146,14 +170,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
                 alarmIntent, PendingIntent.FLAG_NO_CREATE);
 
-        if (alarmPendingIntent == null) {
-            alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
-            // Set repeating alarm that will invoke OnUpdateCurrentSongAlarmReceiver
-            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 2000, 10000, alarmPendingIntent);
-            mLog.info("An alarm was set to update current song");
+        if (alarmPendingIntent != null) {
+            alarmManager.cancel(alarmPendingIntent);
         } else {
-            mLog.info("An alarm to update current song already exists");
+            mLog.warning("Attempting to cancel current song update alarm that doesn't exist");
         }
     }
 

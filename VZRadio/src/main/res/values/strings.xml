@@ -7,5 +7,7 @@
     <string name="radio_fragment_title">Радио</string>
     <string name="library_fragment_title">Моя Музыка</string>
     <string name="events_fragment_title">Афиша</string>
+    <string name="play_radio_notification_title">Радио Время Звучать</string>
+    <string name="play_radio_notification_text">""</string>
 
 </resources>

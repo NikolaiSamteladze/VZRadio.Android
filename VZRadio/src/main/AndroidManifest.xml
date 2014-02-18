@@ -37,7 +37,7 @@
             android:exported="false"
             android:label="Media Player" >
             <intent-filter>
-                <action android:name="com.samteladze.vzradio.android.action.PLAY_RADIO" />
+                <action android:name="com.samteladze.vzradio.action.PLAY_RADIO" />
             </intent-filter>
         </service>
 

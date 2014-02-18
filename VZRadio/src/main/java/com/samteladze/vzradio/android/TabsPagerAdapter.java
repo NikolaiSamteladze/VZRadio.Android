@@ -32,7 +32,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new EventsFragment();
             case 1:
-                return new PlayerFragment();
+                return new RadioFragment();
             case 2:
                 return new MyLibraryFragment();
             default:

@@ -13,12 +13,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.samteladze.vzradio.android.common.Actions;
+import com.samteladze.vzradio.android.common.ILog;
+import com.samteladze.vzradio.android.common.Intents;
+import com.samteladze.vzradio.android.common.LogManager;
+
 public class PlayerFragment extends Fragment {
     private static boolean mMusicIsPlayingFlag = false;
 
     private Button mButtonPlay;
     private Button mButtonStop;
-    private OnCurrentSongChangedReceiver onCurrentSongChangedReceiver;
+    private OnCurrentSongUpdatedReceiver mOnCurrentSongUpdatedReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,7 +37,7 @@ public class PlayerFragment extends Fragment {
   		  	public void onClick(View v) {
   		  		// Start MediaPlayerService using intent
 	  		  	Intent serviceIntent = new Intent();
-	  		    serviceIntent.setAction("com.samteladze.vzradio.action.PLAY");
+	  		    serviceIntent.setAction(Actions.PLAY_RADIO);
 	  		    getActivity().startService(serviceIntent);
 	  		    
 	  		    mMusicIsPlayingFlag = true;
@@ -55,9 +60,9 @@ public class PlayerFragment extends Fragment {
     	changeButtonsState(mMusicIsPlayingFlag);
 
         IntentFilter intentFilter =
-                new IntentFilter("com.samteladze.vzradio.android.CURRENT_SONG_CHANGED");
-        onCurrentSongChangedReceiver = new OnCurrentSongChangedReceiver();
-        getActivity().registerReceiver(onCurrentSongChangedReceiver, intentFilter);
+                new IntentFilter(Intents.CURRENT_SONG_UPDATED);
+        mOnCurrentSongUpdatedReceiver = new OnCurrentSongUpdatedReceiver();
+        getActivity().registerReceiver(mOnCurrentSongUpdatedReceiver, intentFilter);
 
         return playerView;
     }
@@ -66,14 +71,14 @@ public class PlayerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         IntentFilter intentFilter =
-                new IntentFilter("com.samteladze.vzradio.android.CURRENT_SONG_CHANGED");
-        getActivity().registerReceiver(onCurrentSongChangedReceiver, intentFilter);
+                new IntentFilter(Intents.CURRENT_SONG_UPDATED);
+        getActivity().registerReceiver(mOnCurrentSongUpdatedReceiver, intentFilter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(onCurrentSongChangedReceiver);
+        getActivity().unregisterReceiver(mOnCurrentSongUpdatedReceiver);
     }
 
     private void changeButtonsState(boolean musicIsPlayingFlag) {
@@ -87,11 +92,11 @@ public class PlayerFragment extends Fragment {
 										  R.drawable.player_stop_disabled);
     }
 
-    private class OnCurrentSongChangedReceiver extends BroadcastReceiver {
-        private final ILog log;
+    private class OnCurrentSongUpdatedReceiver extends BroadcastReceiver {
+        private final ILog mLog;
 
-        public OnCurrentSongChangedReceiver() {
-            this.log = new ConsoleLog(this.getClass().getCanonicalName());
+        public OnCurrentSongUpdatedReceiver() {
+            mLog = LogManager.getLog(this.getClass().getSimpleName());
         }
 
         @Override

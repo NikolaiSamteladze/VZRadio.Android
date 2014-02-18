@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         mavenCentral()
@@ -6,6 +7,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
+
 apply plugin: 'android'
 
 repositories {
@@ -30,23 +32,23 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 
-    signingConfigs {
-        release {
-            storeFile file("C:/Users/user441/android.keystore")
-            storePassword "Nik&Android&Dev"
-            keyAlias "android"
-            keyPassword "Nik&Android&Dev"
+    android {
+        signingConfigs {
+            release {
+                storeFile file(System.getenv("ANDROID_STORE_FILE"))
+                storePassword System.getenv("ANDROID_STORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
-    buildTypes {
-        release {
-            debuggable false
-            signingConfig signingConfigs.release
-            runProguard true
-            proguardFile getDefaultProguardFile('proguard-android.txt')
-        }
-    }
 }
 
 dependencies {

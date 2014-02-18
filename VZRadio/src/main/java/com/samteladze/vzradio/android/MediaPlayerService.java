@@ -14,19 +14,25 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.samteladze.vzradio.android.common.Actions;
+import com.samteladze.vzradio.android.common.ILog;
+import com.samteladze.vzradio.android.common.LogManager;
+
 public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener {
-    private static final String ACTION_PLAY = "com.samteladze.vzradio.action.PLAY";
+    private MediaPlayer mMediaPlayer;
     
-    MediaPlayer mMediaPlayer;
-    
-    WifiLock mWifiLock;
+    private WifiLock mWifiLock;
     
     private int NOTIFICATION_ID = 1;
+
+    private ILog mLog;
     
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mLog = LogManager.getLog(this.getClass().getSimpleName());
 
-    	Log.d("Media Player", "Starting service");
-    	if (intent.getAction().equals(ACTION_PLAY)) {
+    	mLog.debug("Media Player", "Starting service");
+
+    	if (intent.getAction().equals(Actions.PLAY_RADIO)) {
     		
     		String url = "http://vzradio.ru:8000/onair";
     		mMediaPlayer = new MediaPlayer();
@@ -35,8 +41,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     		try {
     			mMediaPlayer.setDataSource(url);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				mLog.error(e, "Failed to set media player data source to: %s", url);
 			}
     		
     		mMediaPlayer.setOnPreparedListener(this);

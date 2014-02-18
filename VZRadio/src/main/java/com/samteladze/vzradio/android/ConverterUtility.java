@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
  */
 public class ConverterUtility {
 
-    public static String InputStreamToString(InputStream inputStream)
+    public static String inputStreamToString(InputStream inputStream)
             throws IOException {
 
         if (inputStream == null) throw new IllegalArgumentException("inputStream can't be null");

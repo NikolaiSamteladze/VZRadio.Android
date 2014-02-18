@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.samteladze.vzradio.android.common.ILog;
+import com.samteladze.vzradio.android.common.Intents;
+import com.samteladze.vzradio.android.common.LogManager;
 import com.samteladze.vzradio.android.domain.Song;
 
 import java.io.IOException;
@@ -13,16 +16,12 @@ import java.io.IOException;
 /**
 * Created by user441 on 2/3/14.
 */
-public class OnCurrentSongUpdateAlarmReceiver extends BroadcastReceiver {
-
-    public static final String CURRENT_SONG_CHANGED_INTENT_ID =
-            "com.samteladze.vzradio.android.CURRENT_SONG_CHANGED";
-
-    private ILog log;
+public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
+    private final ILog mLog;
     private Context mContext;
 
-    public OnCurrentSongUpdateAlarmReceiver() {
-        this.log = new ConsoleLog(this.getClass().getCanonicalName());
+    public OnUpdateCurrentSongAlarmReceiver() {
+        mLog = LogManager.getLog(this.getClass().getSimpleName());
     }
 
     @Override
@@ -31,7 +30,7 @@ public class OnCurrentSongUpdateAlarmReceiver extends BroadcastReceiver {
         new UpdateCurrentSongAsyncTask().execute();
     }
 
-    private void broadcastSongChanged(Song newSong) {
+    private void broadcastCurrentSongUpdated(Song newSong) {
         String songAsString;
         if (newSong.artist.equals("Радио «Время Звучать!»"))
         {
@@ -41,7 +40,7 @@ public class OnCurrentSongUpdateAlarmReceiver extends BroadcastReceiver {
             songAsString = String.format("%s - %s", newSong.artist, newSong.title);
         }
 
-        Intent currentSongChangedIntent = new Intent(CURRENT_SONG_CHANGED_INTENT_ID);
+        Intent currentSongChangedIntent = new Intent(Intents.CURRENT_SONG_UPDATED);
         currentSongChangedIntent.putExtra("newSong", songAsString);
         mContext.sendBroadcast(currentSongChangedIntent);
     }
@@ -52,10 +51,10 @@ public class OnCurrentSongUpdateAlarmReceiver extends BroadcastReceiver {
             try {
                 VzRadioDataAdapter dataAdapter = new VzRadioDataAdapter();
                 String currentSongAsJson = dataAdapter.getCurrentSongAsJson();
-                log.info(currentSongAsJson);
+                mLog.debug("Received song information: %s", currentSongAsJson);
                 return currentSongAsJson;
             } catch (Exception e) {
-                log.error(e.getMessage());
+                mLog.error(e.getMessage());
                 return null;
             }
         }
@@ -65,9 +64,9 @@ public class OnCurrentSongUpdateAlarmReceiver extends BroadcastReceiver {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 Song song = mapper.readValue(json, Song.class);
-                broadcastSongChanged(song);
+                broadcastCurrentSongUpdated(song);
             } catch (IOException e) {
-                log.error(e.getMessage());
+                mLog.error(e.getMessage());
             }
         }
     }

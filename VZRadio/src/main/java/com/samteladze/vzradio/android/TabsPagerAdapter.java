@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
-    private MainActivity mainActivity;
+    private MainActivity mMainActivity;
 
     /*
     NOTE:
@@ -21,7 +21,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
      */
     public TabsPagerAdapter(FragmentManager fm, MainActivity mainActivity) {
         super(fm);
-        this.mainActivity = mainActivity;
+        this.mMainActivity = mainActivity;
     }
 
     @Override
@@ -54,11 +54,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         Locale locale = Locale.getDefault();
         switch (position) {
             case 0:
-                return  mainActivity.getString(R.string.events_fragment_title);
+                return  mMainActivity.getString(R.string.events_fragment_title);
             case 1:
-                return mainActivity.getString(R.string.radio_fragment_title);
+                return mMainActivity.getString(R.string.radio_fragment_title);
             case 2:
-                return mainActivity.getString(R.string.library_fragment_title);
+                return mMainActivity.getString(R.string.library_fragment_title);
         }
         return null;
     }

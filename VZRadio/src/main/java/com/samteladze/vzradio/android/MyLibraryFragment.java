@@ -11,8 +11,7 @@ public class MyLibraryFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View myLibraryView = inflater.inflate(	R.layout.fragment_my_library,
-												container, false);
+		View myLibraryView = inflater.inflate(R.layout.fragment_my_library, container, false);
 		return myLibraryView;
 	}
 }

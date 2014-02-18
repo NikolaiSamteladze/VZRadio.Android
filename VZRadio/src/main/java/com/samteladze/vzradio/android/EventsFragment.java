@@ -3,6 +3,7 @@ package com.samteladze.vzradio.android;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.samteladze.vzradio.android.common.ConsoleLog;
+import com.samteladze.vzradio.android.common.ILog;
+import com.samteladze.vzradio.android.common.LogManager;
 import com.samteladze.vzradio.android.domain.Event;
 
 import java.util.ArrayList;
@@ -26,7 +30,7 @@ public class EventsFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mLog = new ConsoleLog("EventsFragment");
+        mLog = LogManager.getLog(this.getClass().getSimpleName());
 
         View superView = super.onCreateView(inflater, container, savedInstanceState);
         ListView superListView = (ListView) superView.findViewById(android.R.id.list);
@@ -73,7 +77,7 @@ public class EventsFragment extends ListFragment {
             try {
                 VzRadioDataAdapter dataAdapter = new VzRadioDataAdapter();
                 String eventsAsJson = dataAdapter.getEventsAsJson();
-                mLog.info(eventsAsJson);
+                mLog.debug("Received events information:\n%s", eventsAsJson);
                 return eventsAsJson;
             } catch (Exception e) {
                 mLog.error(e.getMessage());

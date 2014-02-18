@@ -14,15 +14,18 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.samteladze.vzradio.android.common.ILog;
+import com.samteladze.vzradio.android.common.LogManager;
+
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
     private ViewPager viewPager;
     private TabsPagerAdapter tabsPagerAdapter;
     private ActionBar actionBar;
 
-    private OnCurrentSongUpdateAlarmReceiver currentSongUpdateAlarmReceiver;
+    private OnUpdateCurrentSongAlarmReceiver currentSongUpdateAlarmReceiver;
 
-    private ILog log;
+    private ILog mLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.log = new ConsoleLog(this.getClass().getCanonicalName());
+        mLog = LogManager.getLog(this.getClass().getSimpleName());
 
         // Initialization
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -70,8 +73,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Show Radio Fragment on start
         viewPager.setCurrentItem(1);
-
-        scheduleCurrentSongUpdateAlarm();
     }
 
     @Override
@@ -85,8 +86,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         super.onPause();
         AlarmManager alarmManager =
                 (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        // Create an Intent to start OnCurrentSongUpdateAlarmReceiver
-        Intent alarmIntent = new Intent(getApplicationContext(), OnCurrentSongUpdateAlarmReceiver.class);
+        // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
+        Intent alarmIntent = new Intent(getApplicationContext(), OnUpdateCurrentSongAlarmReceiver.class);
         // Create a PendingIntent from alarmIntent
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
                 alarmIntent, PendingIntent.FLAG_NO_CREATE);
@@ -139,17 +140,21 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private void scheduleCurrentSongUpdateAlarm() {
         AlarmManager alarmManager =
                 (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        // Create an Intent to start OnCurrentSongUpdateAlarmReceiver
-        Intent alarmIntent = new Intent(getApplicationContext(), OnCurrentSongUpdateAlarmReceiver.class);
+        // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
+        Intent alarmIntent = new Intent(getApplicationContext(), OnUpdateCurrentSongAlarmReceiver.class);
         // Create a PendingIntent from alarmIntent
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
                 alarmIntent, PendingIntent.FLAG_NO_CREATE);
 
-        alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
-        // Set repeating alarm that will invoke OnCurrentSongUpdateAlarmReceiver
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 2000, 10000, alarmPendingIntent);
-        log.info("An alarm was set to update current song");
+        if (alarmPendingIntent == null) {
+            alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
+            // Set repeating alarm that will invoke OnUpdateCurrentSongAlarmReceiver
+            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + 2000, 10000, alarmPendingIntent);
+            mLog.info("An alarm was set to update current song");
+        } else {
+            mLog.info("An alarm to update current song already exists");
+        }
     }
 
 }

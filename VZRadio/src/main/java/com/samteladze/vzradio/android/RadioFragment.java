@@ -55,6 +55,8 @@ public class RadioFragment extends Fragment {
     	mButtonPlay.setOnClickListener(new OnClickListener() {
   		  	@Override
   		  	public void onClick(View v) {
+
+                mLog.debug("Starting media player service");
   		  		// Start MediaPlayerService using intent
 	  		  	Intent serviceIntent = new Intent();
 	  		    serviceIntent.setAction(Actions.PLAY_RADIO);
@@ -71,6 +73,8 @@ public class RadioFragment extends Fragment {
     	mButtonStop.setOnClickListener(new OnClickListener() {
   		  	@Override
   		  	public void onClick(View v) {
+                mLog.debug("Stopping media player service");
+
 	  		  	// Stop MediaPlayerService using intent
 	  		  	getActivity().stopService(new Intent(getActivity(), MediaPlayerService.class));
 

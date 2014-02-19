@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.samteladze.vzradio.android"
-    android:versionCode="12"
+    android:versionCode="13"
     android:versionName="0.1.2" >
 
     <uses-sdk
@@ -28,6 +28,11 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings_activity_label" >
         </activity>
 
         <receiver android:name=".OnUpdateCurrentSongAlarmReceiver" />

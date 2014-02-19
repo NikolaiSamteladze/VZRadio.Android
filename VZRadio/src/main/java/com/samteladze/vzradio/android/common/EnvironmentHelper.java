@@ -7,6 +7,8 @@ import com.samteladze.vzradio.android.BuildConfig;
  */
 public class EnvironmentHelper {
     public static boolean isDebuggable() {
-        return BuildConfig.DEBUG;
+        return BuildConfig.DEBUG || sDebugMode;
     }
+
+    public static boolean sDebugMode = false;
 }

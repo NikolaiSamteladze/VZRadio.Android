@@ -35,25 +35,42 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     	mLog.debug("Starting MediaPlayerService");
 
     	if (intent.getAction().equals(Actions.PLAY_RADIO)) {
-    		
+
+            mLog.debug("PLAY_RADIO action received");
+
     		String url = "http://vzradio.ru:8000/onair";
+
+            mLog.debug("Creating MediaPlayer ...");
+
     		mMediaPlayer = new MediaPlayer();
     		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     		
     		try {
     			mMediaPlayer.setDataSource(url);
+
+                mLog.debug("Setting media player data source to %s", url);
 			} catch (Exception e) {
 				mLog.error(e, "Failed to set media player data source to: %s", url);
+                return 0;
 			}
-    		
+
+            mLog.debug("Setting onPreparedListener to self ...");
+
     		mMediaPlayer.setOnPreparedListener(this);
     		
     		// Acquire CPU lock and wi-fi lock
+
+            mLog.debug("Acquiring CPU and Wi-Fi lock ...");
+
     		mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
     		mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
     			    .createWifiLock(WifiManager.WIFI_MODE_FULL, "Media Player Wi-Fi Lock");
     		mWifiLock.acquire();
-    		
+
+            mLog.debug("Successfully acquired CPU and Wi-Fi logs");
+
+            mLog.debug("Starting prepare async ...");
+
     		 // Prepare async to not block main thread
     		mMediaPlayer.prepareAsync();
     		
@@ -61,7 +78,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     		Toast.makeText(getApplicationContext(), getString(R.string.wait_while_preparing), Toast.LENGTH_LONG).show();
     		
         }
-    	
+
+        mLog.debug("Returning from service onStartCommand");
+
     	return START_STICKY;
     }
     
@@ -74,7 +93,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     		mMediaPlayer.start();
             broadcastRadioPlaybackStateChangedIntent("on");
-    	}
+    	} else {
+            mLog.debug("MediaPlayer: %s, isPlaying: %s", mMediaPlayer, mMediaPlayer.isPlaying());
+
+        }
     }
 
 	@Override

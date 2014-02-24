@@ -7,10 +7,10 @@ import com.samteladze.vzradio.android.BuildConfig;
  */
 public class LogManager {
     public static ILog getLog(String source) {
-        if (EnvironmentHelper.isDebuggable()) {
-            return new ConsoleLog(source);
-        } else {
+        if (EnvironmentHelper.requiresFileLogging()) {
             return new FileLog(source);
+        } else {
+            return new ConsoleLog(source);
         }
     }
 }

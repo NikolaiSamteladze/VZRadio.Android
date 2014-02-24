@@ -24,7 +24,7 @@ public class FileLog implements ILog {
     private static final String DEFAULT_SOURCE = "Unknown";
 
     private static final String LOG_MESSAGE_FORMAT = "%s [%s] - %s | %s\n";
-    private static final String LOG_EXCEPTION_FORMAT = "\nEXCEPTION:\n%s\nMESSAGE:\n%s\nSTACK TRACE:\n%s";
+    private static final String LOG_EXCEPTION_FORMAT = "\nEXCEPTION: %s\n\nMESSAGE: %s\n\nSTACK TRACE:\n%s";
 
     private final ILog mConsoleLog;
 
@@ -140,7 +140,7 @@ public class FileLog implements ILog {
 
     @Override
     public void error(Object message) {
-        error(null, message.toString());
+        error(null, message);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class FileLog implements ILog {
 
     @Override
     public void error(Throwable exception, Object message) {
-        writeEntry(exception, message.toString(), ERROR_TAG);
+        writeEntry(exception, (message != null) ? message.toString() : "", ERROR_TAG);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class FileLog implements ILog {
 
     @Override
     public void warning(Object message) {
-        writeEntry(null, message.toString(), WARNING_TAG);
+        writeEntry(null, (message != null) ? message.toString() : "", WARNING_TAG);
     }
 
     @Override
@@ -175,7 +175,7 @@ public class FileLog implements ILog {
 
     @Override
     public void info(Object message) {
-        writeEntry(null, message.toString(), INFO_TAG);
+        writeEntry(null, (message != null) ? message.toString() : "", INFO_TAG);
     }
 
     @Override
@@ -185,8 +185,8 @@ public class FileLog implements ILog {
 
     @Override
     public void debug(Object message) {
-        if (EnvironmentHelper.isDebuggable()) {
-            writeEntry(null, message.toString(), DEBUG_TAG);
+        if (EnvironmentHelper.allowsDebugLogging()) {
+            writeEntry(null, (message != null) ? message.toString() : "", DEBUG_TAG);
         }
     }
 

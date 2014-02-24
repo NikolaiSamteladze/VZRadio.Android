@@ -40,7 +40,7 @@ public class RadioFragment extends Fragment {
 
     public RadioFragment() {
         super();
-        mLog = LogManager.getLog(this.getClass().getSimpleName());
+        mLog = LogManager.getLog(RadioFragment.class.getSimpleName());
     }
 
     @Override
@@ -62,8 +62,6 @@ public class RadioFragment extends Fragment {
 	  		    serviceIntent.setAction(Actions.PLAY_RADIO);
 	  		    getActivity().startService(serviceIntent);
 
-                createRadioNotification();
-
 	  		    sMusicIsPlaying = true;
 	  		    changeButtonsState(sMusicIsPlaying);
   		  	}
@@ -77,8 +75,6 @@ public class RadioFragment extends Fragment {
 
 	  		  	// Stop MediaPlayerService using intent
 	  		  	getActivity().stopService(new Intent(getActivity(), MediaPlayerService.class));
-
-                cancelRadioNotification();
 
 	  		  	sMusicIsPlaying = false;
 	  		  	changeButtonsState(sMusicIsPlaying);
@@ -139,59 +135,6 @@ public class RadioFragment extends Fragment {
             String newSongName = intent.getStringExtra("newSong");
             TextView textView = (TextView) getActivity().findViewById(R.id.currentSongName);
             textView.setText(newSongName);
-
-            // Change song name in notification if it is shown
-            if (sMusicIsPlaying) {
-                updateRadioNotification(newSongName);
-            }
         }
-    }
-
-    private void createRadioNotification() {
-        mLog.debug("Creating a new radio notification");
-
-        updateRadioNotification("");
-    }
-
-    private void updateRadioNotification(String text) {
-        mLog.debug("Updating radio notification with text: %s", text);
-
-        Context context = getActivity().getApplicationContext();
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Create a new builder and construct notification from scratch
-        if (mRadioNotificationBuilder == null) {
-            Intent notificationIntent = new Intent(context, MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-                    PendingIntent.FLAG_CANCEL_CURRENT);
-
-            Resources resources = context.getResources();
-            mRadioNotificationBuilder = new Notification.Builder(context);
-
-            mRadioNotificationBuilder.setContentIntent(contentIntent)
-                    .setSmallIcon(R.drawable.just_fish_logo_cut_72x72)
-                    .setTicker(resources.getString(R.string.play_radio_notification_title))
-                    .setWhen(System.currentTimeMillis())
-                    .setOngoing(true)
-                    .setContentTitle(resources.getString(R.string.play_radio_notification_title));
-        }
-
-        mRadioNotificationBuilder.setContentText(text);
-
-        Notification notification = mRadioNotificationBuilder.getNotification();
-        notificationManager.notify(NOTIFICATION_ID, notification);
-    }
-
-    private void cancelRadioNotification() {
-        mLog.debug("Canceling radio notification");
-
-        Context context = getActivity().getApplicationContext();
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(NOTIFICATION_ID);
-
-        // Clear builder. Notification will be constructed from scratch
-        mRadioNotificationBuilder = null;
     }
 }

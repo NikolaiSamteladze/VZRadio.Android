@@ -27,7 +27,7 @@ public class ConsoleLog implements ILog {
 
     @Override
     public void error(Throwable exception, Object message) {
-        Log.e(source, message.toString(), exception);
+        Log.e(source, (message != null) ? message.toString() : "", exception);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ConsoleLog implements ILog {
 
     @Override
     public void warning(Object message) {
-        Log.w(source, message.toString());
+        Log.w(source, (message != null) ? message.toString() : "");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ConsoleLog implements ILog {
 
     @Override
     public void info(Object message) {
-        Log.i(source, message.toString());
+        Log.i(source, (message != null) ? message.toString() : "");
     }
 
     @Override
@@ -62,8 +62,8 @@ public class ConsoleLog implements ILog {
 
     @Override
     public void debug(Object message) {
-        if (EnvironmentHelper.isDebuggable()) {
-            Log.d(source, message.toString());
+        if (EnvironmentHelper.allowsDebugLogging()) {
+            Log.d(source, (message != null) ? message.toString() : "");
         }
     }
 

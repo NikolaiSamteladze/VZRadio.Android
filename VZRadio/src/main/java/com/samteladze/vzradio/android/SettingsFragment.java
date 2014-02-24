@@ -2,10 +2,8 @@ package com.samteladze.vzradio.android;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
-import com.samteladze.vzradio.android.R;
 import com.samteladze.vzradio.android.common.EnvironmentHelper;
 
 /**
@@ -38,7 +36,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(KEY_DEBUG_MODE)) {
-            EnvironmentHelper.sDebugMode = sharedPreferences.getBoolean(KEY_DEBUG_MODE, false);
+            EnvironmentHelper.sInDebugMode = sharedPreferences.getBoolean(KEY_DEBUG_MODE, false);
         }
     }
 }

@@ -3,11 +3,14 @@ package com.samteladze.vzradio.android;
 import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
@@ -30,7 +33,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     public MainActivity() {
         super();
-        mLog = LogManager.getLog(this.getClass().getSimpleName());
+        mLog = LogManager.getLog(MainActivity.class.getSimpleName());
     }
 
     @Override
@@ -85,19 +88,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onResume() {
         mLog.debug("Resuming MainActivity");
         super.onResume();
-
-        mLog.debug("Scheduling CurrentSongUpdateAlarm");
-        scheduleCurrentSongUpdateAlarm();
     }
 
     @Override
     public void onPause() {
         mLog.debug("Pausing MainActivity");
-
         super.onPause();
+    }
 
-        mLog.debug("Canceling CurrentSongUpdateAlarm");
-        cancelCurrentSongUpdateAlarm();
+    @Override
+    public void onStop() {
+        mLog.debug("In onStop");
+        super.onStop();
+    }
+
+    @Override
+    public void onRestart() {
+        mLog.debug("In onRestart");
+        super.onRestart();
     }
 
     @Override
@@ -140,41 +148,4 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
 
     }
-
-    private void scheduleCurrentSongUpdateAlarm() {
-        mLog.debug("MainActivity in scheduleCurrentSongUpdateAlarm method");
-
-        AlarmManager alarmManager =
-                (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
-        Intent alarmIntent = new Intent(getApplicationContext(), OnUpdateCurrentSongAlarmReceiver.class);
-        // Create a PendingIntent from alarmIntent
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
-                alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        // Set repeating alarm that will invoke OnUpdateCurrentSongAlarmReceiver
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 2000, 10000, alarmPendingIntent);
-
-        mLog.info("An alarm was set to update current song");
-    }
-
-    private void cancelCurrentSongUpdateAlarm() {
-        mLog.debug("MainActivity in cancelCurrentSongUpdateAlarm method");
-
-        AlarmManager alarmManager =
-                (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
-        Intent alarmIntent = new Intent(getApplicationContext(), OnUpdateCurrentSongAlarmReceiver.class);
-        // Create a PendingIntent from alarmIntent
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
-                alarmIntent, PendingIntent.FLAG_NO_CREATE);
-
-        if (alarmPendingIntent != null) {
-            alarmManager.cancel(alarmPendingIntent);
-        } else {
-            mLog.warning("Attempting to cancel current song update alarm that doesn't exist");
-        }
-    }
-
 }

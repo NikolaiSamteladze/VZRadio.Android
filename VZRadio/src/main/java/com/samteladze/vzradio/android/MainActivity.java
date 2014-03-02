@@ -18,6 +18,8 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.samteladze.vzradio.android.common.ILog;
 import com.samteladze.vzradio.android.common.LogManager;
 
@@ -34,6 +36,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public MainActivity() {
         super();
         mLog = LogManager.getLog(MainActivity.class.getSimpleName());
+
+
     }
 
     @Override

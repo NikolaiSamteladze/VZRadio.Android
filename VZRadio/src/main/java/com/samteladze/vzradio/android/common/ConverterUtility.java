@@ -1,4 +1,4 @@
-package com.samteladze.vzradio.android;
+package com.samteladze.vzradio.android.common;
 
 import java.io.BufferedReader;
 import java.io.IOException;

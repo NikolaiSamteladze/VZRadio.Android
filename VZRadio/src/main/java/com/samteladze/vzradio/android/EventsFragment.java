@@ -3,7 +3,6 @@ package com.samteladze.vzradio.android;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,8 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.samteladze.vzradio.android.common.ConsoleLog;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.samteladze.vzradio.android.common.ILog;
 import com.samteladze.vzradio.android.common.LogManager;
 import com.samteladze.vzradio.android.domain.Event;
@@ -30,7 +30,7 @@ public class EventsFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mLog = LogManager.getLog(this.getClass().getSimpleName());
+        mLog = LogManager.getLog(EventsFragment.class.getSimpleName());
 
         View superView = super.onCreateView(inflater, container, savedInstanceState);
         ListView superListView = (ListView) superView.findViewById(android.R.id.list);
@@ -75,7 +75,7 @@ public class EventsFragment extends ListFragment {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                VzRadioDataAdapter dataAdapter = new VzRadioDataAdapter();
+                VzRadioDataProvider dataAdapter = new VzRadioDataProvider();
                 String eventsAsJson = dataAdapter.getEventsAsJson();
                 mLog.debug("Received events information:\n%s", eventsAsJson);
                 return eventsAsJson;

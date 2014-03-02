@@ -51,7 +51,7 @@ public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                VzRadioDataAdapter dataAdapter = new VzRadioDataAdapter();
+                VzRadioDataProvider dataAdapter = new VzRadioDataProvider();
                 String currentSongAsJson = dataAdapter.getCurrentSongAsJson();
                 mLog.debug("Received song information: %s", currentSongAsJson);
                 return currentSongAsJson;

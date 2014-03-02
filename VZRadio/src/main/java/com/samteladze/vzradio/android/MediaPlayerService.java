@@ -29,6 +29,8 @@ import com.samteladze.vzradio.android.common.LogManager;
 public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener,
     MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
 
+    private static final String SAMARA_RADIO_STREAM_URI = "http://vzradio.ru:8000/onair";
+
     private MediaPlayer mMediaPlayer;
     private WifiLock mWifiLock;
     private ILog mLog;
@@ -41,88 +43,55 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-    	mLog.debug("In onStartCommand");
-
-        mLog.debug("PLAY_RADIO action received");
-
-        String url = "http://vzradio.ru:8000/onair";
-
-        mLog.debug("Creating MediaPlayer ...");
-
         mMediaPlayer = new MediaPlayer();
-
-        mLog.debug("Setting MediaPlayer's events listeners ...");
-        mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setOnErrorListener(this);
-        mMediaPlayer.setOnCompletionListener(this);
-
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         try {
-            mMediaPlayer.setDataSource(url);
-
-            mLog.debug("Setting media player data source to %s", url);
+            mMediaPlayer.setDataSource(SAMARA_RADIO_STREAM_URI);
         } catch (Exception e) {
-            mLog.error(e, "Failed to set media player data source to: %s", url);
+            mLog.error(e, "Failed to set media player data source to: %s", SAMARA_RADIO_STREAM_URI);
             failAndExit();
         }
 
-        mLog.debug("Setting onPreparedListener to self ...");
-
+        mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnPreparedListener(this);
 
         // Acquire CPU lock and wi-fi lock
-
-        mLog.debug("Acquiring CPU and Wi-Fi lock ...");
-
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "Media Player Wi-Fi Lock");
         mWifiLock.acquire();
 
-        mLog.debug("Successfully acquired CPU and Wi-Fi logs");
-
-        mLog.debug("Starting prepare async ...");
-
-         // Prepare async to not block main thread
         mMediaPlayer.prepareAsync();
 
-        mLog.debug("Starting MediaPlayerService in foreground with notification");
+        // Create notification and start service in foreground
         Notification notification = RadioNotificationManager.getNotification(getApplicationContext());
         startForeground(RadioNotificationManager.RADIO_NOTIFICATION_ID, notification);
 
-        mLog.debug("Registering OnUpdateCurrentSongAlarmReceiver");
+        // Register receiver for current songs updates
         IntentFilter intentFilter = new IntentFilter(Intents.CURRENT_SONG_UPDATED);
         mOnCurrentSongUpdatedReceiver = new OnCurrentSongUpdatedReceiver();
         registerReceiver(mOnCurrentSongUpdatedReceiver, intentFilter);
 
-        mLog.debug("Service is preparing. Scheduling UpdateCurrentSong alarm");
+        // Schedule an alarm to update currently played song from server
         scheduleUpdateCurrentSongAlarm();
 
         // Show some text while media player is preparing
         Toast.makeText(getApplicationContext(), getString(R.string.wait_while_preparing), Toast.LENGTH_LONG).show();
-
-        // Create notification so app can be accessed with closed activity
-//        mLog.debug("Creating Radio Notification");
-//        RadioNotificationManager.create(getApplicationContext());
-
-        mLog.debug("Returning from service onStartCommand");
 
     	return START_STICKY;
     }
     
     @Override
 	public void onPrepared(MediaPlayer mediaPlayer) {
-        mLog.debug("MediaPlayerService is prepared");
-
 		if ((mMediaPlayer != null) && (!mMediaPlayer.isPlaying())) {
-            mLog.debug("Starting playback");
-
     		mMediaPlayer.start();
             broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Started);
     	} else {
-            mLog.debug("MediaPlayer: %s, isPlaying: %s", mMediaPlayer, mMediaPlayer.isPlaying());
-
+            mLog.warning("MediaPlayer is null: %s; isPlaying: %s",
+                    mMediaPlayer, mMediaPlayer.isPlaying());
         }
     }
 
@@ -136,11 +105,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	public void onDestroy() {
         super.onDestroy();
 
-        mLog.debug("Destroying MediaPlayerService");
-
 		if (mMediaPlayer != null)  {
 			if (mMediaPlayer.isPlaying()) {
-                mLog.debug("Stopping playback");
 				mMediaPlayer.stop();
 			}
 
@@ -150,30 +116,21 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 			mMediaPlayer = null;
 		}
 
-        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Stopped);
-
-        mLog.debug("MediaPlayer service is destroyed. Canceling UpdateCurrentSong alarm");
-		cancelUpdateCurrentSongAlarm();
-
-//        mLog.debug("Canceling Radio Notification");
-//        RadioNotificationManager.cancel(getApplicationContext());
-
-        mLog.debug("Failed. Unregistering CurrentSongUpdatedAlarmReceiver");
+        cancelUpdateCurrentSongAlarm();
         unregisterReceiver(mOnCurrentSongUpdatedReceiver);
+
+        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Stopped);
 
         stopForeground(true);
 	}
 
     private void broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState state) {
-        mLog.debug("Broadcasting new radio playback state: %s", state);
         Intent radioPlaybackStateChangedIntent = new Intent(Intents.RADIO_PLAYBACK_STATE_CHANGED);
         radioPlaybackStateChangedIntent.putExtra("state", state);
         getApplicationContext().sendBroadcast(radioPlaybackStateChangedIntent);
     }
 
     private void scheduleUpdateCurrentSongAlarm() {
-        mLog.debug("Scheduling CurrentSongUpdate Alarm");
-
         AlarmManager alarmManager =
                 (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
@@ -190,8 +147,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     private void cancelUpdateCurrentSongAlarm() {
-        mLog.debug("Canceling UpdateCurrentSong alarm");
-
         AlarmManager alarmManager =
                 (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         // Create an Intent to start OnUpdateCurrentSongAlarmReceiver
@@ -220,16 +175,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     private void fail() {
-        mLog.debug("In fail");
+        mLog.error("MediaPlayer service failed. Cleaning up.");
 
-        mLog.debug("MediaPlayer service failed. Canceling UpdateCurrentSong alarm");
         cancelUpdateCurrentSongAlarm();
-
-        mLog.debug("Failed. Canceling radio notification if exists");
-
-//        RadioNotificationManager.cancel(this);
-
-        mLog.debug("Failed. Unregistering CurrentSongUpdatedAlarmReceiver");
         unregisterReceiver(mOnCurrentSongUpdatedReceiver);
 
         broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Error);
@@ -239,8 +187,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     private void failAndExit() {
         fail();
-
-        mLog.debug("Stopping service");
         stopSelf();
     }
 
@@ -255,11 +201,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     private class OnCurrentSongUpdatedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mLog.debug("OnCurrentSongUpdatedReceiver onReceive");
-
             String newSongName = intent.getStringExtra("newSong");
-
-            mLog.debug("Updating Radio notification with %s", newSongName);
             RadioNotificationManager.update(newSongName, getApplicationContext());
         }
     }

@@ -1,6 +1,6 @@
 package com.samteladze.vzradio.android;
 
-import com.samteladze.vzradio.android.common.ConsoleLog;
+import com.samteladze.vzradio.android.common.ConverterUtility;
 import com.samteladze.vzradio.android.common.ILog;
 import com.samteladze.vzradio.android.common.LogManager;
 
@@ -11,24 +11,24 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class VzRadioDataAdapter {
+public class VzRadioDataProvider {
 
-    private static final String VzRadioCurrentlyPlayedSongApi = "http://rock63.ru/export/vzplay.json";
-    private static final String EVENTS_API_URI = "http://rock63.ru/export/api.php?type=news";
+    private static final String VZRADIO_CURRENTLY_PLAYED_SONG_API = "http://rock63.ru/export/vzplay.json";
+    private static final String EVENTS_API_URI = "http://rock63.ru/export/api.php?type=afisha";
 
     private final ILog mLog;
 
-    public VzRadioDataAdapter() {
+    public VzRadioDataProvider() {
         mLog = LogManager.getLog(this.getClass().getSimpleName());
     }
 
-    public VzRadioDataAdapter(ILog log) {
+    public VzRadioDataProvider(ILog log) {
         mLog = log;
     }
 
     public String getCurrentSongAsJson() {
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(VzRadioCurrentlyPlayedSongApi);
+        HttpGet httpGet = new HttpGet(VZRADIO_CURRENTLY_PLAYED_SONG_API);
 
         InputStream content;
         try {

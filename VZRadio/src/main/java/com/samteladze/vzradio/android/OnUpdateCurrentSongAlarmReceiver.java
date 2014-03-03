@@ -26,8 +26,6 @@ public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        mLog.debug("OnUpdateCurrentSongAlarmReceiver in onReceive method");
-
         mContext = context;
         new UpdateCurrentSongAsyncTask().execute();
     }
@@ -43,7 +41,7 @@ public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
         }
 
         Intent currentSongChangedIntent = new Intent(Intents.CURRENT_SONG_UPDATED);
-        currentSongChangedIntent.putExtra("newSong", songAsString);
+        currentSongChangedIntent.putExtra("song", songAsString);
         mContext.sendBroadcast(currentSongChangedIntent);
     }
 
@@ -53,7 +51,6 @@ public class OnUpdateCurrentSongAlarmReceiver extends BroadcastReceiver {
             try {
                 VzRadioDataProvider dataAdapter = new VzRadioDataProvider();
                 String currentSongAsJson = dataAdapter.getCurrentSongAsJson();
-                mLog.debug("Received song information: %s", currentSongAsJson);
                 return currentSongAsJson;
             } catch (Exception e) {
                 mLog.error(e.getMessage());

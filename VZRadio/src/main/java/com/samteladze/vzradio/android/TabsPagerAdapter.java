@@ -21,7 +21,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
      */
     public TabsPagerAdapter(FragmentManager fm, MainActivity mainActivity) {
         super(fm);
-        this.mMainActivity = mainActivity;
+        mMainActivity = mainActivity;
     }
 
     @Override
@@ -34,11 +34,8 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new RadioFragment();
             case 2:
-                return new MyLibraryFragment();
+                return new TopChartFragment();
             default:
-                /* TODO
-                Do something with this ugly null
-                 */
                 return null;
         }
     }
@@ -58,7 +55,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return mMainActivity.getString(R.string.radio_fragment_title);
             case 2:
-                return mMainActivity.getString(R.string.library_fragment_title);
+                return mMainActivity.getString(R.string.top_chart_fragment_title);
         }
         return null;
     }

@@ -23,14 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventsFragment extends ListFragment {
-
     private ILog mLog;
+
+    public EventsFragment() {
+        mLog = LogManager.getLog(EventsFragment.class);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        mLog = LogManager.getLog(EventsFragment.class.getSimpleName());
 
         View superView = super.onCreateView(inflater, container, savedInstanceState);
         ListView superListView = (ListView) superView.findViewById(android.R.id.list);
@@ -43,8 +44,6 @@ public class EventsFragment extends ListFragment {
                 R.layout.fragment_events, container, false);
         superViewGroup.addView(mLinearLayout, superListViewIndex, superListView.getLayoutParams());
         return superView;
-
-//        return inflater.inflate(R.layout.fragment_events, container, false);
     }
 
     @Override
@@ -59,7 +58,6 @@ public class EventsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-
 		Toast.makeText(getActivity().getApplicationContext(), "Hey! Stop it!",
 						Toast.LENGTH_SHORT).show();
 	}
@@ -67,7 +65,6 @@ public class EventsFragment extends ListFragment {
     private void updateEventsList(List<Event> updatedEvents) {
 		ArrayAdapter<Event> arrayAdapter = new EventsArrayAdapter(getActivity(), updatedEvents);
 		setListAdapter(arrayAdapter);
-
         setListShown(true);
     }
 
@@ -77,7 +74,6 @@ public class EventsFragment extends ListFragment {
             try {
                 VzRadioDataProvider dataAdapter = new VzRadioDataProvider();
                 String eventsAsJson = dataAdapter.getEventsAsJson();
-                mLog.debug("Received events information:\n%s", eventsAsJson);
                 return eventsAsJson;
             } catch (Exception e) {
                 mLog.error(e.getMessage());

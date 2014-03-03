@@ -1,72 +1,57 @@
 package com.samteladze.vzradio.android;
 
 import android.app.ActionBar;
-import android.app.AlarmManager;
-import android.app.FragmentTransaction;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.samteladze.vzradio.android.common.ILog;
 import com.samteladze.vzradio.android.common.LogManager;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
-    private ViewPager viewPager;
-    private TabsPagerAdapter tabsPagerAdapter;
-    private ActionBar actionBar;
-
-    private OnUpdateCurrentSongAlarmReceiver currentSongUpdateAlarmReceiver;
+    private ViewPager mViewPager;
+    private TabsPagerAdapter mTabsPagerAdapter;
+    private ActionBar mActionBar;
 
     private ILog mLog;
 
     public MainActivity() {
         super();
-        mLog = LogManager.getLog(MainActivity.class.getSimpleName());
 
-
+        mLog = LogManager.getLog(MainActivity.class);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mLog.debug("Creating MainActivity");
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Initialization
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        actionBar = getActionBar();
-        tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mActionBar = getActionBar();
+        mTabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
 
-        viewPager.setAdapter(tabsPagerAdapter);
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mViewPager.setAdapter(mTabsPagerAdapter);
+        mActionBar.setHomeButtonEnabled(false);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Adding tabs
-        for (int i = 0; i < tabsPagerAdapter.getCount(); i++) {
-            actionBar.addTab(actionBar.newTab()
-                    .setText(tabsPagerAdapter.getPageTitle(i))
+        for (int i = 0; i < mTabsPagerAdapter.getCount(); i++) {
+            mActionBar.addTab(mActionBar.newTab()
+                    .setText(mTabsPagerAdapter.getPageTitle(i))
                     .setTabListener(this));
         }
 
         // When user navigates between tabs, ViewPager will highlight the selected tab
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
 
@@ -75,7 +60,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             @Override
             public void onPageSelected(int position) {
                 // Highlight the selected tab
-                actionBar.setSelectedNavigationItem(position);
+                mActionBar.setSelectedNavigationItem(position);
             }
 
             @Override
@@ -85,30 +70,26 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         });
 
         // Show Radio Fragment on start
-        viewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(1);
     }
 
     @Override
     public void onResume() {
-        mLog.debug("Resuming MainActivity");
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mLog.debug("Pausing MainActivity");
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        mLog.debug("In onStop");
         super.onStop();
     }
 
     @Override
     public void onRestart() {
-        mLog.debug("In onRestart");
         super.onRestart();
     }
 
@@ -140,7 +121,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
-        viewPager.setCurrentItem(tab.getPosition());
+        mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override

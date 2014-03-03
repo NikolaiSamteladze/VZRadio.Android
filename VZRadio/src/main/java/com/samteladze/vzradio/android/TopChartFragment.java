@@ -6,12 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MyLibraryFragment extends Fragment {
+public class TopChartFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View myLibraryView = inflater.inflate(R.layout.fragment_my_library, container, false);
-		return myLibraryView;
+		View topChartView = inflater.inflate(R.layout.fragment_top_chart, container, false);
+		return topChartView;
 	}
 }

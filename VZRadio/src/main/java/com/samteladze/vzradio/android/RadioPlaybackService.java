@@ -2,14 +2,12 @@ package com.samteladze.vzradio.android;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
@@ -17,16 +15,13 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.samteladze.vzradio.android.common.Actions;
 import com.samteladze.vzradio.android.common.ILog;
 import com.samteladze.vzradio.android.common.Intents;
 import com.samteladze.vzradio.android.common.LogManager;
 
-public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener,
+public class RadioPlaybackService extends Service implements MediaPlayer.OnPreparedListener,
     MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
 
     private static final String SAMARA_RADIO_STREAM_URI = "http://vzradio.ru:8000/onair";
@@ -37,9 +32,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     private OnCurrentSongUpdatedReceiver mOnCurrentSongUpdatedReceiver;
 
-    public MediaPlayerService() {
+    private String mCurrentlyPlayedSongName;
+
+    public RadioPlaybackService() {
         super();
-        mLog = LogManager.getLog(MediaPlayerService.class.getSimpleName());
+        mLog = LogManager.getLog(RadioPlaybackService.class.getSimpleName());
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -66,6 +63,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
         mMediaPlayer.prepareAsync();
 
+        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Preparing, null);
+
         // Create notification and start service in foreground
         Notification notification = RadioNotificationManager.getNotification(getApplicationContext());
         startForeground(RadioNotificationManager.RADIO_NOTIFICATION_ID, notification);
@@ -78,9 +77,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         // Schedule an alarm to update currently played song from server
         scheduleUpdateCurrentSongAlarm();
 
-        // Show some text while media player is preparing
-        Toast.makeText(getApplicationContext(), getString(R.string.wait_while_preparing), Toast.LENGTH_LONG).show();
-
     	return START_STICKY;
     }
     
@@ -88,7 +84,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	public void onPrepared(MediaPlayer mediaPlayer) {
 		if ((mMediaPlayer != null) && (!mMediaPlayer.isPlaying())) {
     		mMediaPlayer.start();
-            broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Started);
+            broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Started, mCurrentlyPlayedSongName);
     	} else {
             mLog.warning("MediaPlayer is null: %s; isPlaying: %s",
                     mMediaPlayer, mMediaPlayer.isPlaying());
@@ -119,14 +115,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         cancelUpdateCurrentSongAlarm();
         unregisterReceiver(mOnCurrentSongUpdatedReceiver);
 
-        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Stopped);
+        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Stopped, null);
 
         stopForeground(true);
 	}
 
-    private void broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState state) {
+    private void broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState state,
+                                                          String currentlyPlayedSongName) {
         Intent radioPlaybackStateChangedIntent = new Intent(Intents.RADIO_PLAYBACK_STATE_CHANGED);
         radioPlaybackStateChangedIntent.putExtra("state", state);
+        radioPlaybackStateChangedIntent.putExtra("song", currentlyPlayedSongName);
         getApplicationContext().sendBroadcast(radioPlaybackStateChangedIntent);
     }
 
@@ -165,7 +163,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         mLog.error("An error occurred during an async operation. Code: %s, Extra: %s", what, extra);
-        fail();
+        failAndExit();
         return false;
     }
 
@@ -180,7 +178,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         cancelUpdateCurrentSongAlarm();
         unregisterReceiver(mOnCurrentSongUpdatedReceiver);
 
-        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Error);
+        broadcastRadioPlaybackStateChangedIntent(RadioPlaybackState.Error, null);
 
         stopForeground(true);
     }
@@ -201,8 +199,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     private class OnCurrentSongUpdatedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String newSongName = intent.getStringExtra("newSong");
-            RadioNotificationManager.update(newSongName, getApplicationContext());
+            mCurrentlyPlayedSongName = intent.getStringExtra("song");
+            RadioNotificationManager.update(mCurrentlyPlayedSongName, getApplicationContext());
         }
     }
 }

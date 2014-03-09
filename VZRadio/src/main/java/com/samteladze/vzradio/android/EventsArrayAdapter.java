@@ -61,7 +61,7 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         if ((event.imagesResources != null) && !event.imagesResources.isEmpty()) {
             mImageLoader.displayImage(event.imagesResources.get(0).smallThumbUri, imageView);
         } else {
-            imageView.setImageResource(R.drawable.no_event_image);
+            imageView.setImageResource(R.drawable.no_image);
         }
 		
 		return rowView;

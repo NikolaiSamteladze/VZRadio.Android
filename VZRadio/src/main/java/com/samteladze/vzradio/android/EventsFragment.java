@@ -1,5 +1,6 @@
 package com.samteladze.vzradio.android;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -58,8 +59,18 @@ public class EventsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Toast.makeText(getActivity().getApplicationContext(), "Hey! Stop it!",
-						Toast.LENGTH_SHORT).show();
+        Intent eventDetailsActivityIntent = new Intent(getActivity(), EventsDetailsActivity.class);
+        Event selectedEvent = (Event) getListAdapter().getItem(position);
+        eventDetailsActivityIntent.putExtra("title", selectedEvent.title);
+        eventDetailsActivityIntent.putExtra("venue", selectedEvent.venue);
+        eventDetailsActivityIntent.putExtra("startTime", selectedEvent.startTime);
+        eventDetailsActivityIntent.putExtra("description", selectedEvent.description);
+        eventDetailsActivityIntent.putExtra("imageUri",
+            (selectedEvent.imagesResources != null) && (selectedEvent.imagesResources.size() > 0) ?
+            selectedEvent.imagesResources.get(0).mediumThumbUri :
+            null
+        );
+        getActivity().startActivity(eventDetailsActivityIntent);
 	}
 
     private void updateEventsList(List<Event> updatedEvents) {

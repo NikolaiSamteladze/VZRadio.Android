@@ -14,5 +14,6 @@
     <string name="pref_debug_mode_title">Debug Mode</string>
     <string name="pref_debug_mode_summary">Turns on app debugging mode</string>
     <string name="settings_activity_label">Settings</string>
+    <string name="event_details_activity_label">Event Details</string>
 
 </resources>

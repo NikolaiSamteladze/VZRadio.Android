@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VZRadio.iml" filepath="$PROJECT_DIR$/VZRadio.iml" />
       <module fileurl="file://$PROJECT_DIR$/VZRadio.Android.iml" filepath="$PROJECT_DIR$/VZRadio.Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/VZRadio.Android.iml" filepath="$PROJECT_DIR$/VZRadio.Android.iml" />
     </modules>
   </component>
 </project>

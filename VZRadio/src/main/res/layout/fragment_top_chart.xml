@@ -13,24 +13,17 @@
         android:scaleX="0.75"
         android:scaleY="0.75"/>
 
-    <RelativeLayout
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/top_chart_seven_number_dark"/>
+
+    <ListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/top_chart_logo">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-            <!--android:src="@drawable/top_chart_seven_number"/>-->
-
-        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@android:id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
-
-
+        android:layout_below="@+id/top_chart_logo" />
 
 </RelativeLayout>
